@@ -1,0 +1,300 @@
+==============================================================================
+ MUSIC GENRE CLASSIFIER - HOW TO RUN THIS PROJECT (BEGINNER GUIDE)
+==============================================================================
+
+WHAT THIS PROJECT DOES
+----------------------
+You upload a music file (.wav or .mp3). The program:
+  1. Cuts the first/middle 30 seconds into 3-second pieces.
+  2. Extracts 57 audio features from each piece (MFCC, spectral centroid,
+     tempo, etc. - Signals & Systems part).
+  3. Gives those features to a trained Machine Learning model, which predicts
+     one of 10 genres: blues, classical, country, disco, hiphop, jazz, metal,
+     pop, reggae, rock.
+You use it in a web page that runs on YOUR OWN computer. Nothing is uploaded
+to the internet.
+
+Project link: https://github.com/adiidk/genre-classifier
+
+This guide is written for Windows. Mac/Linux differences are in Section 9.
+
+
+==============================================================================
+ SECTION 1 - WHAT YOU NEED
+==============================================================================
+ - A computer (Windows 10/11 recommended)
+ - Internet connection (for the one-time installation)
+ - About 2 GB of free disk space
+ - 15-20 minutes for the first setup
+ - Python 3.12 (recommended). Python 3.10 or 3.11 should also work.
+   Very new versions (3.13 or later) may fail to install some libraries.
+ - Git (optional - there is a no-Git method in Step 2, Option B)
+
+
+==============================================================================
+ SECTION 2 - ONE-TIME SETUP
+==============================================================================
+
+STEP 1: INSTALL PYTHON
+ 1. Go to https://www.python.org/downloads/
+ 2. Download Python 3.12.x and run the installer.
+ 3. IMPORTANT: on the very first screen, TICK the box
+        "Add python.exe to PATH"
+    Then click "Install Now".
+ 4. When it finishes, close the installer.
+
+ Check it worked:
+ - Press the Windows key, type "powershell", press Enter.
+ - Type:   python --version
+ - It should print something like:   Python 3.12.4
+ - If it says "python is not recognized", Python was installed without the
+   PATH box ticked. Uninstall it, install again, and tick the box.
+
+
+STEP 2: DOWNLOAD THE PROJECT (choose ONE option)
+
+ OPTION A - With Git (recommended)
+ 1. Install Git from https://git-scm.com/downloads (use all default options).
+ 2. Close PowerShell and open it again.
+ 3. Choose a folder for the project, e.g. Documents. In File Explorer open
+    that folder, click the address bar at the top, type "powershell" and press
+    Enter. A blue window opens in that folder.
+ 4. Type this and press Enter:
+
+        git clone https://github.com/adiidk/genre-classifier.git
+
+ 5. Then type:
+
+        cd genre-classifier
+
+ OPTION B - Without Git (simple download)
+ 1. Open https://github.com/adiidk/genre-classifier in your browser.
+ 2. Click the green "Code" button, then "Download ZIP".
+ 3. Find the downloaded ZIP file, right-click it, choose "Extract All...".
+ 4. Open the extracted folder until you see app.py, config.py, models, etc.
+ 5. Click the address bar at the top of File Explorer, type "powershell"
+    and press Enter. A blue window opens inside the project folder.
+
+
+STEP 3: CREATE A VIRTUAL ENVIRONMENT
+ A virtual environment is a private box for this project's libraries, so
+ they do not mix with other things on your PC.
+
+ In the PowerShell window (inside the project folder), type:
+
+        python -m venv venv
+
+ Wait a few seconds. Nothing is printed. A new folder named "venv" appears.
+
+
+STEP 4: ACTIVATE IT
+ Type:
+
+        venv\Scripts\activate
+
+ You should now see "(venv)" at the start of the line. This means it is
+ active.
+
+ If you see a RED error saying "running scripts is disabled on this system",
+ type this first:
+
+        Set-ExecutionPolicy -Scope Process RemoteSigned
+
+ (press Y if it asks) and then type the activate command again.
+ This setting only lasts for the current window.
+
+
+STEP 5: INSTALL THE LIBRARIES
+ With "(venv)" showing, type:
+
+        pip install -r requirements.txt
+
+ This downloads Flask, librosa, scikit-learn, etc. It takes 3-10 minutes
+ and prints a lot of text. That is normal. Wait until the line starting with
+ "(venv) PS ..." comes back. Do not close the window.
+
+ If it ends with a red ERROR, copy the error text and see Section 6.
+
+
+==============================================================================
+ SECTION 3 - RUN THE APP
+==============================================================================
+ 1. In the same window (with "(venv)" showing), type:
+
+        python app.py
+
+ 2. After a few seconds you will see a line like:
+
+        Running on http://127.0.0.1:5000
+
+ 3. Open Chrome, Edge or Firefox and go to:
+
+        http://127.0.0.1:5000
+
+ 4. LEAVE THE POWERSHELL WINDOW OPEN. Closing it stops the app.
+
+ To stop the app: click the PowerShell window and press Ctrl + C.
+
+
+==============================================================================
+ SECTION 4 - HOW TO USE THE WEBSITE
+==============================================================================
+ 1. Click the dashed box (or drag a file into it) and choose a .wav or .mp3
+    file. Maximum size is 50 MB. You can play it with the audio player.
+ 2. Choose a model from the dropdown:
+      - Logistic Regression
+      - Support Vector Machine (RBF)
+ 3. Click "Analyze & classify".
+ 4. Wait. The first analysis can take 10-30 seconds while the audio features
+    are calculated.
+ 5. You will see:
+      - The predicted genre and average confidence
+      - A bar for every genre
+      - The genre guessed for each 3-second segment
+      - A spectrogram and the extracted features ("Technical details")
+ 6. You can change the model in the dropdown afterwards. The prediction
+    updates instantly without re-analysing the file.
+
+
+==============================================================================
+ SECTION 5 - GOOD TO KNOW (LIMITATIONS)
+==============================================================================
+ - Only 30 seconds of a song are analysed (middle part of long songs, if the
+   latest version of the code is used).
+ - Files shorter than 3 seconds are rejected. Silent or corrupt files are
+   rejected with a message.
+ - The model knows only the 10 genres listed above. If you upload speech,
+   noise or a genre outside the list, it will still choose the closest one.
+   It cannot say "unknown". If the 3-second segments disagree a lot, treat the
+   result as unreliable.
+ - The model was trained on the GTZAN dataset (1000 clips, 30 s each).
+   Accuracy on modern songs can be lower than on the dataset.
+ - The app runs only on your own computer (127.0.0.1). Other people on the
+   network cannot open it.
+
+
+==============================================================================
+ SECTION 6 - TROUBLESHOOTING
+==============================================================================
+
+PROBLEM: "python is not recognized"
+ -> Python is not installed or PATH was not ticked. Reinstall Python and tick
+    "Add python.exe to PATH". Then close and reopen PowerShell.
+
+PROBLEM: "git is not recognized"
+ -> Install Git, then close and reopen PowerShell. Or use Option B in Step 2
+    (Download ZIP), which needs no Git.
+
+PROBLEM: "running scripts is disabled on this system"
+ -> Run:  Set-ExecutionPolicy -Scope Process RemoteSigned
+    then run:  venv\Scripts\activate  again.
+
+PROBLEM: pip install fails with a red error
+ -> Make sure "(venv)" is showing and you are inside the project folder
+    (the folder that contains requirements.txt).
+ -> Check your Python version with:  python --version
+    If it is 3.13 or newer, install Python 3.12 and redo Steps 3-5
+    (delete the "venv" folder first).
+ -> Try again:  python -m pip install --upgrade pip
+    then:       pip install -r requirements.txt
+
+PROBLEM: The model dropdown is empty, or a yellow/red banner says that a model
+         was trained with a different scikit-learn version
+ -> Stop the app (Ctrl + C) and re-train the models (takes a few minutes):
+
+        python train_models.py --skip-cv
+
+    Then start the app again:   python app.py
+    Reload the web page (Ctrl + Shift + R).
+
+PROBLEM: A .wav file works but a .mp3 file says "could not be read"
+ -> MP3 decoding needs extra software called ffmpeg.
+    Easiest fix: convert the file to .wav and upload that.
+    Or install ffmpeg: open PowerShell and run
+
+        winget install Gyan.FFmpeg
+
+    then close and reopen PowerShell and try again.
+
+PROBLEM: "Address already in use" / port 5000 is busy
+ -> Another copy of the app is still running. Close other PowerShell windows
+    running python app.py, or restart the computer.
+
+PROBLEM: The page does not load at all
+ -> Check that the PowerShell window running "python app.py" is still open
+    and shows "Running on http://127.0.0.1:5000".
+ -> Type exactly  http://127.0.0.1:5000  in the browser address bar.
+
+PROBLEM: A spinner is stuck or the page looks wrong
+ -> Hard refresh the page with Ctrl + Shift + R.
+
+PROBLEM: The first analysis is very slow
+ -> Normal. Extracting the features is heavy. Later files are usually faster.
+
+PROBLEM: Some other error appears
+ -> Look at the PowerShell window running the app. The real error message is
+    printed there. Press F12 in the browser and open the "Console" tab for
+    browser-side errors.
+
+
+==============================================================================
+ SECTION 7 - NEXT TIME YOU WANT TO RUN IT
+==============================================================================
+ You do NOT repeat the installation. Just:
+ 1. Open PowerShell inside the project folder
+    (File Explorer -> address bar -> type "powershell" -> Enter).
+ 2. Type:   venv\Scripts\activate
+ 3. Type:   python app.py
+ 4. Open:   http://127.0.0.1:5000
+
+
+==============================================================================
+ SECTION 8 - OPTIONAL: GET THE LATEST VERSION / RETRAIN
+==============================================================================
+ Get updates (only if you used Git in Step 2, Option A):
+
+        git pull
+
+ Retrain the models from the included data/music_features.csv:
+
+        python train_models.py            (full run with cross-validation,
+                                           takes longer)
+        python train_models.py --skip-cv  (quick run)
+
+ The raw GTZAN audio is NOT included in the repository (too big).
+ The features extracted from it are already in data/music_features.csv.
+ To rebuild that file you would need the GTZAN dataset (folder
+ "genres_original") and the script legacy/extract_features.py.
+
+
+==============================================================================
+ SECTION 9 - MAC / LINUX DIFFERENCES
+==============================================================================
+ - Open "Terminal" instead of PowerShell.
+ - Use python3 instead of python if "python" is not found.
+ - Create the environment:    python3 -m venv venv
+ - Activate it:               source venv/bin/activate
+ - The other commands (pip install -r requirements.txt, python app.py) are
+   the same.
+ - Install ffmpeg for MP3:    Mac: brew install ffmpeg
+                              Ubuntu/Debian: sudo apt install ffmpeg
+
+
+==============================================================================
+ PROJECT FILES (SHORT OVERVIEW)
+==============================================================================
+ app.py                 Starts the web server and defines the API
+ config.py              Settings (port, upload limit, folders)
+ feature_extractor.py   Calculates the 57 audio features
+ train_models.py        Trains and saves the ML models
+ services/              Backend helpers (audio, features, models, errors)
+ models/                Trained models (.joblib) and their info (.json)
+ data/music_features.csv  Training data (features from the GTZAN dataset)
+ templates/index.html   The web page
+ static/css, static/js  Page styling and page behaviour
+ legacy/                Original feature extraction and ML notebook code
+ requirements.txt       List of required Python libraries
+
+==============================================================================
+ END OF GUIDE
+==============================================================================
