@@ -1,0 +1,11 @@
+venv/
+.venv/
+__pycache__/
+*.pyc
+uploads/*
+!uploads/.gitkeep
+.vscode/
+.DS_Store
+.env
+genres_original/
+spectrograms/

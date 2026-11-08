@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Music Genre Classifier</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body data-max-mb="{{ max_mb }}">
+  <header class="hero">
+    <h1>Music Genre Classification</h1>
+    <p>Signals &amp; Systems feature extraction → Machine Learning prediction</p>
+  </header>
+
+  <main>
+    <div id="banners"></div>
+
+    <section class="card">
+      <h2><span class="step">1</span> Choose a track and a model</h2>
+
+      <label id="dropzone" class="dropzone" for="file-input" tabindex="0">
+        <input id="file-input" type="file" accept=".wav,.mp3,audio/wav,audio/mpeg" hidden>
+        <span class="dz-title">Drop an audio file here, or click to browse</span>
+        <span class="dz-sub">.wav or .mp3 · up to {{ max_mb }} MB · 30 seconds are analysed</span>
+        <span id="file-name" class="file-name"></span>
+      </label>
+      <audio id="player" controls hidden></audio>
+
+      <div class="row">
+        <div class="field">
+          <label for="model-select">Model</label>
+          <select id="model-select" disabled></select>
+        </div>
+        <button id="analyze-btn" class="btn" disabled>Analyze &amp; classify</button>
+      </div>
+      <p id="model-info" class="muted"></p>
+
+      <div id="status" class="status" hidden>
+        <div class="spinner"></div><span id="status-text"></span>
+      </div>
+      <p id="error" class="error" role="alert" hidden></p>
+    </section>
+
+    <div id="results" hidden>
+      <section class="card">
+        <h2><span class="step">2</span> Prediction</h2>
+        <div class="result-top">
+          <div>
+            <div class="muted small">Predicted genre</div>
+            <div id="genre" class="genre"></div>
+            <div class="muted"><span id="confidence"></span> average confidence · <span id="model-used"></span></div>
+          </div>
+        </div>
+        <h3>All genres</h3>
+        <div id="ranking" class="ranking"></div>
+        <h3>Segment by segment</h3>
+        <p class="muted small">The track is cut into 3-second segments, and each is classified on its own. The final answer averages their probabilities.</p>
+        <div id="segments" class="segments"></div>
+        <p id="votes" class="muted small"></p>
+        <p id="truncated" class="muted small" hidden>Only 30 seconds of this track were analysed.</p>
+      </section>
+
+      <section class="card">
+        <h2><span class="step">3</span> What the model saw</h2>
+        <img id="spectrogram" class="spectrogram" alt="Mel spectrogram of the analysed audio" hidden>
+        <details>
+          <summary>Technical details</summary>
+          <dl id="analysis" class="facts"></dl>
+          <h3>Extracted features (averaged over segments)</h3>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Feature</th><th>Mean</th><th>Variance</th></tr></thead>
+              <tbody id="scalar-rows"></tbody>
+            </table>
+          </div>
+          <h3>MFCC coefficients (mean)</h3>
+          <div id="mfcc"></div>
+        </details>
+      </section>
+    </div>
+  </main>
+
+  <footer>Signals &amp; Systems project · Flask + librosa + scikit-learn</footer>
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
