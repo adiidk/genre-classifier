@@ -13,6 +13,8 @@ import json
 import os
 import time
 from datetime import datetime
+from sklearn.svm import SVC
+from xgb_wrapper import LabelledXGBClassifier
 
 import joblib
 import numpy as np
@@ -48,9 +50,20 @@ def build_svm():
     )
 
 
+def build_xgboost():
+    # settings from genre_ml_final.py (cell 39); no PowerTransformer needed for trees
+    return LabelledXGBClassifier(
+        max_depth=6, learning_rate=0.1, n_estimators=800,
+        subsample=0.8, colsample_bytree=0.8, n_jobs=-1,
+        random_state=config.RANDOM_STATE,
+    )
+
+
 MODEL_SPECS = {
     "logistic_regression": {"name": "Logistic Regression", "builder": build_logistic_regression},
     "svm": {"name": "Support Vector Machine (RBF)", "builder": build_svm},
+    # serial_cv: XGBoost already uses all CPU cores, so folds run one after another
+    "xgboost": {"name": "XGBoost", "builder": build_xgboost, "serial_cv": True},
 }
 
 
@@ -142,8 +155,9 @@ def main():
         metrics = {}
         if not args.skip_cv:
             t0 = time.time()
-            print(f"Cross-validating ({args.folds} folds, {args.jobs} workers) ...")
-            metrics = cross_validate(spec["builder"], X, y, groups, args.folds, args.jobs)
+            cv_jobs = 1 if spec.get("serial_cv") else args.jobs
+            print(f"Cross-validating ({args.folds} folds, {cv_jobs} workers) ...")
+            metrics = cross_validate(spec["builder"], X, y, groups, args.folds, cv_jobs)
             print(f"  segment accuracy: {metrics['segment_accuracy']:.4f}")
             print(f"  song accuracy:    {metrics['song_accuracy']:.4f}")
             print(f"  ({time.time() - t0:.0f} s)")
