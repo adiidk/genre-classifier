@@ -9,3 +9,9 @@ uploads/*
 .env
 genres_original/
 spectrograms/
+models/*.joblib
+uploads/*
+!uploads/.gitkeep
+models/*.joblib
+uploads/*
+!uploads/.gitkeep
