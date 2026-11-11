@@ -76,6 +76,9 @@
   "n_segments_trained": 9981,
   "n_songs_trained": 999,
   "sklearn_version": "1.4.2",
-  "trained_at": "2026-11-08T18:17:37",
-  "cv_metrics": {}
+  "trained_at": "2026-11-11T13:50:58",
+  "cv_metrics": {
+    "segment_accuracy": 0.7486223825268009,
+    "song_accuracy": 0.8218218218218218
+  }
 }
